@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Senny PC Control</title>
+
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="Style.css" />
+  </head>
+  <body>
+    <section class="section_1 container-fluid p-0">
+      <div class="d-flex flex-column">
+        <div>
+          <header>
+            <nav class="navbar navbar-dark bg-primary">
+              <a class="navbar-brand" href="#">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABmJLR0QA/wD/AP+gvaeTAAABWklEQVRoge3ZP0oDQRzF8e/TxsZoK1baKIillrlFbmCZJncRK9FT6AGioqCliBdQ7DSiYCPPxiLE3Zjsv0zg96nCbmbmvd2EkFkIIYR5onEnbe8AW8BiM3FyfQOPkh6mGmW7Zfvc6TmzvTxNkaNZJx7jMCtz5kfL9jOwNtVtbM6LpMmyjVyBTs3BJsnTGQ6U9Z6FpkPVJYqkJoqkJoqkJoqkJoqkJoqkJoqkJoqkJoqkJm/zIfN/cSok/cndxB25Be7qXqTuIieS9iXtAad1LpRX5LOi+a9yXpfxkXUwr8hNRYt2bW/Y3gS6Fc15nXUw78u+C/SB1YoWr8or0JZ0P3oidzfe9jpwAGyTyG48cCzpacZZQpiY7Z7tQQXPPAa2e2WyjH309k8JAW9Aq0yAIe+SVooOLvzLLsnAZdHxGS7KDC58RwBsLwFtoPCV/DUA+pK+Ss4TQghz4geY7OGm5OUvgQAAAABJRU5ErkJggg==">
+                PC Control
+              </a>
+            </nav>
+          </header>                   
+        </div>
+      </div>
+
+      <div class="alert alert-danger" id="pc_status_off_alert" style="max-width: 18rem; margin: auto; margin-top: 15px;" role="alert">
+        <a class="close" onclick="$('#pc_status_off_alert').hide()">×</a>
+        Компютер выключен!      
+      </div>
+
+      <div class="alert alert-success" id="pc_status_on_alert" style="max-width: 18rem; margin: auto; margin-top: 15px;" role="alert">
+        <a class="close" onclick="$('#pc_status_on_alert').hide()">×</a>
+        Компютер включен!      
+      </div>
+
+<!--Modal Run PC status fail-->
+<!--Hiden as default-->
+      <div class="alert alert-danger collapse" id="pc_status_fail" style="max-width: 18rem; margin: auto; margin-top: 15px;" role="alert">
+        <a class="close" onclick="$('#pc_status_fail').hide()">×</a>
+        <h4 class="alert-heading">Ошибка запуска!</h4>        
+        <p>Компютер не был запущен. Возможно он отключен от сети или имеет неисправности.</p>        
+        <hr>
+        <p class="mb-0">Необходимо проверить оборудывание.</p>        
+      </div>
+
+      <div class="card border-primary mb-3" style="max-width: 18rem; margin: auto; margin-top: 15px;">
+        <div class="card-header bg-primary border-primary text-white">Управление питанием</div>
+        <div class="card-body text-primary">
+          <h5 class="card-title">Включение компютера</h5>
+          <p class="card-text">Для запуска, компютер должен быть подключен к сети, а для удаленного управления - к сети интернет.</p>
+        </div>
+        <div class="card-footer bg-transparent border-primary text-center">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#RunPCModal">Включить</button>
+          <button type="button" id="power_off_button" class="btn btn-primary" disabled>Выключить</button>          
+        </div>
+      </div>
+
+      <div class="card border-success mb-3" style="max-width: 18rem; margin: auto;">
+        <div class="card-header bg-success border-success text-white">Перезагрузка</div>
+        <div class="card-body text-primary">
+          <h5 class="card-title text-success">Перезагрузка компютера</h5>
+          <p class="card-text text-success">Для перезагрузки, компютер должен быть включен.</p>
+        </div>
+        <div class="card-footer bg-transparent border-success text-center">
+          <button type="button" class="btn btn-success" id="reboot_button" disabled>Перезагрузить</button>
+        </div>
+      </div>    
+
+<!-- Modal Run PC-->
+<div class="modal fade" id="RunPCModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Управление питанием</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Включить компютер?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="RunPC">Ок</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>        
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal Run PC progress-->
+<div class="modal fade" id="RunPCProgressModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Проверка статуса</h5>
+        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>-->
+      </div>
+      <div class="modal-body">
+        Пожалуйста подождите...
+      </div>
+      <div class="progress" style="width: 95%; margin: auto;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" id="run_progress" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
+      </div>
+      <p></p>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+     <div class="copyrights text-center bg-primary text-white" >
+         <p class="p-3">&copy; Copyright 2020 Senny. All Rights Reserved</p>
+     </div>    
+</section>
+<script>
+  var progress = 0;
+  var delay = 200;
+  let timer;  
+
+  function RunProgress() {
+    timer = setInterval(ProgressMove, delay);    
+    $('.progress .progress-bar').css("width", 0 + "%");
+    $('.progress .progress-bar').attr("aria-valuenow", 0 + "%");
+    $('.progress .progress-bar').text(0 + "%");
+    progress = 0;
+  }
+
+  function ProgressMove(){    
+    progress = progress + 10;
+    if(progress<101){
+      $('.progress .progress-bar').css("width", +progress + "%");
+      $('.progress .progress-bar').attr("aria-valuenow", +progress + "%");
+      $('.progress .progress-bar').text(+progress + "%");
+    }
+      if(progress == 120){
+        clearTimeout(timer);
+        $("#RunPCProgressModal").modal('hide');
+        //Enable buttons
+        $('#reboot_button').prop('disabled', false);
+        $('#power_off_button').prop('disabled', false);        
+        $("#pc_status_fail").show();
+      }
+    }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    //alert('DOM Loaded');
+    });
+
+  function click_run_pc() {
+    //alert('example_text');
+    $("#RunPCProgressModal").modal('show');
+    $("#RunPCModal").modal('hide'); 
+    RunProgress();
+}
+
+element = document.getElementById('RunPC');
+element.onclick = click_run_pc
+
+
+</script>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
